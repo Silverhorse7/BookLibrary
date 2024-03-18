@@ -10,9 +10,17 @@ module.exports = {
     client: 'mysql2',
     connection: {
       host: 'localhost',  // Replace with your MySQL host
-      user: 'your_username',
-      password: 'your_password',
-      database: 'your_database_name'
+      user: 'root',
+      password: '12345678',
+      database: 'library',
+      charset: 'utf8'
+    },
+
+    migrations: {
+      directory: __dirname + '/knex/migrations',
+    },
+    seeds: {
+      directory: __dirname + '/knex/seeds'
     }
   },
 
@@ -20,9 +28,10 @@ module.exports = {
     client: 'mysql2',
     connection: {
       host: 'localhost',  // Replace with your MySQL host
-      user: 'your_username',
-      password: 'your_password',
-      database: 'your_database_name'
+      user: 'root',
+      password: '12345678',
+      database: 'library',
+      charset: 'utf8'
     },
     pool: {
       min: 2,
@@ -37,9 +46,10 @@ module.exports = {
     client: 'mysql2',
     connection: {
       host: 'localhost',  // Replace with your MySQL host
-      user: 'your_username',
-      password: 'your_password',
-      database: 'your_database_name'
+      user: 'root',
+      password: '12345678',
+      database: 'library',
+      charset: 'utf8'
     },
     pool: {
       min: 2,
@@ -51,3 +61,4 @@ module.exports = {
   }
 
 };
+
