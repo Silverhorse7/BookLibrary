@@ -1,52 +1,25 @@
 const express = require('express');
 const PORT = process.env.PORT || 3001;
-const knex = require('./knex/knex.js');
+const knex = require('./Database/knex.js');
 const app = express();
 
-// add some books
 
-//books SCHEMA IS : ISBN, title, author, available_quantity, shelf_location
-
+const Book = require('./Modules/Book.js');
+const Borrower = require('./Modules/User.js');
 
 // add some books (TEST Purpose)
 app.get('/add-books', (req, res) => {
-    knex('books').insert([
-        {
-            ISBN: '9780132350881',
-            title: 'Clean Code: A Handbook of Agile Software Craftsmanship',
-            available_quantity: 10,
-            shelf_location: 'A1',
-            author: 'Robert C. Martin'
-        },
-        {
-            ISBN: '9780132350882',
-            title: 'Clean Code: A Handbook of Agile Software Craftsmanship',
-            available_quantity: 10,
-            shelf_location: 'A1',
-            author: 'Robert C. Martin'
-        },
-        {
-            ISBN: '9780132350883',
-            title: 'Clean Code: A Handbook of Agile Software Craftsmanship',
-            available_quantity: 10,
-            shelf_location: 'A1',
-            author: 'Robert C. Martin'
-        },
-        {
-            ISBN: '9780132350884',
-            title: 'Clean Code: A Handbook of Agile Software Craftsmanship',
-            available_quantity: 10,
-            shelf_location: 'A1',
-            author: 'Robert C. Martin'
-        }
-    ]).then(() => {
-        res.send('Books added');
-    }
-    ).catch((err) => {
-        res.send(err);
-    });
+
+    new Book('9780132350881', 'Clean Code: A Handbook of Agile Software Craftsmanship', 'Robert C. Martin', 10, 'A1');
+    res.send('Books added');
 });
 
+// add some borrowers (TEST Purpose)
+app.get('/add-borrower', (req, res) => {
+
+    new Borrower('John Doe', 'yosefone212@gmail.com');
+    res.send('Borrower added');
+});
 
 
 app.get('/', (req, res) => {
