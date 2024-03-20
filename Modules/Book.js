@@ -9,24 +9,30 @@ class Book {
         this.author = author;
         this.available_quantity = available_quantity;
         this.shelf_location = shelf_location;
+    }
 
-        knex('books').insert([
+    async addBookToDatabase() {
+        return await knex('books').insert(
             {
                 ISBN: this.ISBN,
                 title: this.title,
+                author: this.author,
                 available_quantity: this.available_quantity,
-                shelf_location: this.shelf_location,
-                author: this.author
-            }
-        ]);
+                shelf_location: this.shelf_location
+            });
     }
 
     static async getBooks() {
         return await knex('books').select('*');
     }
 
+    static async getQuantity(ISBN) {
+        console.log(`ISBN: ${ISBN}`);
+        return await knex('books').where('ISBN', ISBN).select('available_quantity');
+    }
 
     static async getBookByISBN(ISBN) {
+        console.log(`ISBN: ${ISBN}`);
         return await knex('books').where('ISBN', ISBN).select('*');
     }
 
@@ -38,24 +44,42 @@ class Book {
         return await knex('books').where('author', author).select('*');
     }
 
-    static async updateBookQuantity(ISBN, newQuantity) {
-        return await knex('books').where('ISBN', ISBN).update({ available_quantity: newQuantity });
+    updateBookQuantity(ISBN, newQuantity) {
+        console.log('Haha3.2');
+
+        knex('books')
+            .where('ISBN', ISBN)
+            .update({ available_quantity: newQuantity })
+            .then((res) => {
+                console.log(res);
+            })
+            .catch((err) => {
+                console.log(err);
+            });
     }
 
-    static async updateBookShelfLocation(ISBN, newShelfLocation) {
-        return await knex('books').where('ISBN', ISBN).update({ shelf_location: newShelfLocation });
+
+    async updateBookShelfLocation(ISBN, newShelfLocation) {
+        await knex('books').where('ISBN', ISBN).update({ shelf_location: newShelfLocation });
     }
 
-    static async updateBookTitle(ISBN, newTitle) {
-        return await knex('books').where('ISBN', ISBN).update({ title: newTitle });
+    async updateBookTitle(ISBN, newTitle) {
+        try {
+            await knex('books').where('ISBN', ISBN).update({ title: newTitle });
+
+        }
+        catch (err) {
+            console.log(err);
+        }
+        return;
     }
 
-    static async updateBookAuthor(ISBN, newAuthor) {
-        return await knex('books').where('ISBN', ISBN).update({ author: newAuthor });
+    async updateBookAuthor(ISBN, newAuthor) {
+        await knex('books').where('ISBN', ISBN).update({ author: newAuthor });
     }
 
-    static async deleteBook(ISBN) {
-        return await knex('books').where('ISBN', ISBN).del();
+    async deleteBook(ISBN) {
+        await knex('books').where('ISBN', ISBN).del();
     }
 
 }

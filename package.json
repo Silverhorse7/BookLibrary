@@ -1,0 +1,20 @@
+{
+  "name": "booklibrary",
+  "version": "1.0.0",
+  "description": "A restful api using noejs express mysql",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Silverhorse7/BookLibrary.git"
+  },
+  "author": "Yosef Madboly",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Silverhorse7/BookLibrary/issues"
+  },
+  "homepage": "https://github.com/Silverhorse7/BookLibrary#readme"
+}
