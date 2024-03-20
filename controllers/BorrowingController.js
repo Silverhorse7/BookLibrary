@@ -16,8 +16,7 @@ exports.borrowBook = async (req, res) => {
 
 exports.returnBook = async (req, res) => {
     // Logic to return a book
-    const { ISBN } = req.params;
-    const { email } = req.body;
+    const { ISBN, email } = req.body;
 
     try {
         await BorrowingSystem.returnBook(ISBN, email);

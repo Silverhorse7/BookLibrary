@@ -3,39 +3,28 @@ const Borrower = require('./Borrower.js');
 const knex = require('../Database/knex.js');
 
 exports.checkOutBook = async (ISBN, email) => {
-    // Logic to check out a book
+    // Logic to borrow a book
     const book = await Book.getBookByISBN(ISBN);
     if (book.length === 0) {
         throw new Error('Book not found');
     }
-
-    console.log("Haha1");
 
     const borrower = await Borrower.getBorrowerByEmail(email);
     if (borrower.length === 0) {
         throw new Error('Borrower not found');
     }
 
-    console.log("Haha2");
-
-
-    if (book.available_quantity <= 0) {
-        throw new Error('Book is not available');
+    if (book[0].available_quantity === 0) {
+        throw new Error('Book not available');
     }
 
-    console.log("Haha3");
+    await Book.updateBookQuantity(ISBN, book[0].available_quantity - 1);
 
-    const Book_quantity = await Book.getQuantity(ISBN);
-
-    console.log("Haha3.1");
-
-    Book.updateBookQuantity(ISBN, Book_quantity);
-
-    console.log("Haha3.5");
+    console.log(3);
 
     await Borrower.borrowBook(ISBN, email);
 
-    console.log("Haha4");
+    console.log(4);
 };
 
 exports.returnBook = async (ISBN, email) => {
@@ -46,12 +35,17 @@ exports.returnBook = async (ISBN, email) => {
     }
 
     const borrower = await Borrower.getBorrowerByEmail(email);
+
+    console.log(`ISBN: ${ISBN}, email: ${email}`);
+
+    
     if (borrower.length === 0) {
         throw new Error('Borrower not found');
     }
 
-    await Book.updateBookQuantity(ISBN, book.available_quantity + 1);
+    await Book.updateBookQuantity(ISBN, book[0].available_quantity + 1);
     await Borrower.returnBook(ISBN, email);
+
 };
 
 

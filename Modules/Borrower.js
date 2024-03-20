@@ -29,6 +29,18 @@ class Borrower {
                 name: this.name
             });
     }
+
+    static async returnBook(ISBN, email) {
+        return await knex('books_borrowers').where('ISBN', ISBN).andWhere('email', email).del();
+    }
+
+    static async borrowBook(ISBN, email) {
+        return await knex('books_borrowers').insert(
+            {
+                ISBN: ISBN,
+                email: email
+            });
+    }
 }
 
 module.exports = Borrower;

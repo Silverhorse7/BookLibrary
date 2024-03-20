@@ -44,18 +44,12 @@ class Book {
         return await knex('books').where('author', author).select('*');
     }
 
-    updateBookQuantity(ISBN, newQuantity) {
-        console.log('Haha3.2');
-
-        knex('books')
-            .where('ISBN', ISBN)
-            .update({ available_quantity: newQuantity })
-            .then((res) => {
-                console.log(res);
-            })
-            .catch((err) => {
-                console.log(err);
-            });
+    static async updateBookQuantity(ISBN, newQuantity) {
+        try {
+            await knex('books').where('ISBN', ISBN).update({ available_quantity: newQuantity });
+        } catch (error) {
+            console.error('An error occurred:', error);
+        }
     }
 
 

@@ -21,8 +21,8 @@ router.delete('/borrowers', BorrowerController.deleteBorrower); // tested, worki
 router.get('/borrowers', BorrowerController.listBorrowers); // tested, working
 
 // Borrowing process routes
-router.post('/borrow', BorrowingController.borrowBook);
-router.post('/return', BorrowingController.returnBook);
-router.get('/borrowers', BorrowingController.listBorrowedBooks);
+router.post('/borrow', BorrowingController.borrowBook); // tested, working
+router.post('/return', BorrowingController.returnBook); // tested, working
+router.get('/borrowers', BorrowingController.listBorrowedBooks); // tested, working
 
 module.exports = router;
