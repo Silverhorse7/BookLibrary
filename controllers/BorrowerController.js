@@ -1,49 +1,52 @@
-const Borrower = require('../Modules/Borrower.js');
+const User = require('../Modules/user.js');
 
-exports.registerBorrower = async (req, res) => {
-    // Logic to register a borrower
-    const { email, name } = req.body;
+// schema is: username, email, age, role
 
-    const newBorrower = new Borrower(name, email);
-    await newBorrower.addBorrowerToDatabase();
 
-    res.status(201).json({ message: 'Borrower registered successfully' });
+exports.registerUser = async (req, res) => {
+    // Logic to register a User
+    const { user } = req.body;
+
+    await User.addUser(user);
+
+    res.status(201).json({ message: 'User registered successfully' });
+
 };
 
-exports.updateBorrower = async (req, res) => {
-    // Logic to update a borrower's details
+exports.updateUser = async (req, res) => {
+    // Logic to update a User's details
     const { email, name } = req.body;
 
-    const borrower = await Borrower.getBorrowerByEmail(email);
-    if (borrower.length === 0) {
-        return res.status(404).json({ message: 'Borrower not found' });
+    const User = await User.getUserByEmail(email);
+    if (User.length === 0) {
+        return res.status(404).json({ message: 'User not found' });
     }
 
     // check if the email is already in use
-    const borrowerWithEmail = await Borrower.getBorrowerByEmail(email);
+    const UserWithEmail = await User.getUserByEmail(email);
 
-    await Borrower.updateBorrowerName(email, name);
+    await User.updateUserName(email, name);
 
 
 };
 
-exports.deleteBorrower = async (req, res) => {
-    // Logic to delete a borrower
+exports.deleteUser = async (req, res) => {
+    // Logic to delete a User
 
     const { email, name } = req.body;
-    const borrower = await Borrower.getBorrowerByEmail(email);
+    const User = await User.getUserByEmail(email);
 
-    if (borrower.length === 0) {
-        return res.status(404).json({ message: 'Borrower not found' });
+    if (User.length === 0) {
+        return res.status(404).json({ message: 'User not found' });
     }
 
-    await Borrower.deleteBorrower(email);
-    res.status(200).json({ message: 'Borrower deleted successfully' });
+    await User.deleteUser(email);
+    res.status(200).json({ message: 'User deleted successfully' });
 };
 
-exports.listBorrowers = async (req, res) => {
-    // Logic to list all borrowers
-    const borrowers = await Borrower.getBorrowers();
+exports.listUsers = async (req, res) => {
+    // Logic to list all Users
+    const Users = await User.getUsers();
 
-    res.status(200).json(borrowers);
+    res.status(200).json(Users);
 };

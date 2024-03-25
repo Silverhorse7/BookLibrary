@@ -16,5 +16,15 @@
   "bugs": {
     "url": "https://github.com/Silverhorse7/BookLibrary/issues"
   },
-  "homepage": "https://github.com/Silverhorse7/BookLibrary#readme"
+  "homepage": "https://github.com/Silverhorse7/BookLibrary#readme",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "jsonwebtoken": "^9.0.2",
+    "sqlite3": "^5.1.7",
+    "yup": "^1.4.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.3"
+  }
 }

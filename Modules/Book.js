@@ -1,81 +1,49 @@
-const knex = require('../Database/knex.js');
+const knex = require('../Database/knex');
 
 
-class Book {
+exports.addBook = async (book) => {
+    return await knex('book').insert({
+        ISBN: book.ISBN,
+        title: book.title,
+        author: book.author,
+        available_quantity: book.available_quantity,
+        shelf_location: book.shelf_location
+    });
+};
 
-    constructor(ISBN, title, author, available_quantity, shelf_location) {
-        this.ISBN = ISBN;
-        this.title = title;
-        this.author = author;
-        this.available_quantity = available_quantity;
-        this.shelf_location = shelf_location;
+exports.getBooks = async () => {
+    return await knex('book').select('*');
+};
+
+exports.getQuantity = async (ISBN) => {
+    return await knex('book').where('ISBN', ISBN).select('available_quantity');
+};
+
+exports.getBookByISBN = async (ISBN) => {
+    return await knex('book').where('ISBN', ISBN).select('*');
+};
+
+exports.getBookByTitle = async (title) => {
+    return await knex('book').where('title', title).select('*');
+};
+
+exports.getBookByAuthor = async (author) => {
+    return await knex('book').where('author', author).select('*');
+};
+
+exports.updateBookQuantity = async (ISBN, newQuantity) => {
+    try {
+        await knex('book').where('ISBN', ISBN).update({ available_quantity: newQuantity });
+    } catch (error) {
+        console.error('An error occurred:', error);
     }
+};
 
-    async addBookToDatabase() {
-        return await knex('books').insert(
-            {
-                ISBN: this.ISBN,
-                title: this.title,
-                author: this.author,
-                available_quantity: this.available_quantity,
-                shelf_location: this.shelf_location
-            });
-    }
+exports.updateBookShelfLocation = async (ISBN, newShelfLocation) => {
+    await knex('book').where('ISBN', ISBN).update({ shelf_location: newShelfLocation });
+};
 
-    static async getBooks() {
-        return await knex('books').select('*');
-    }
+exports.deleteBook = async (ISBN) => {
+    return await knex('book').where('ISBN', ISBN).del();
+};
 
-    static async getQuantity(ISBN) {
-        console.log(`ISBN: ${ISBN}`);
-        return await knex('books').where('ISBN', ISBN).select('available_quantity');
-    }
-
-    static async getBookByISBN(ISBN) {
-        console.log(`ISBN: ${ISBN}`);
-        return await knex('books').where('ISBN', ISBN).select('*');
-    }
-
-    static async getBookByTitle(title) {
-        return await knex('books').where('title', title).select('*');
-    }
-
-    static async getBookByAuthor(author) {
-        return await knex('books').where('author', author).select('*');
-    }
-
-    static async updateBookQuantity(ISBN, newQuantity) {
-        try {
-            await knex('books').where('ISBN', ISBN).update({ available_quantity: newQuantity });
-        } catch (error) {
-            console.error('An error occurred:', error);
-        }
-    }
-
-
-    async updateBookShelfLocation(ISBN, newShelfLocation) {
-        await knex('books').where('ISBN', ISBN).update({ shelf_location: newShelfLocation });
-    }
-
-    async updateBookTitle(ISBN, newTitle) {
-        try {
-            await knex('books').where('ISBN', ISBN).update({ title: newTitle });
-
-        }
-        catch (err) {
-            console.log(err);
-        }
-        return;
-    }
-
-    async updateBookAuthor(ISBN, newAuthor) {
-        await knex('books').where('ISBN', ISBN).update({ author: newAuthor });
-    }
-
-    async deleteBook(ISBN) {
-        await knex('books').where('ISBN', ISBN).del();
-    }
-
-}
-
-module.exports = Book;

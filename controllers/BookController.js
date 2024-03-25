@@ -2,10 +2,19 @@ const Book = require('../Modules/Book.js');
 
 exports.addBook = async (req, res) => {
     // Logic to add a book
-    const { ISBN, title, author, available_quantity, shelf_location } = req.body;
-    console.log(ISBN, title, author, available_quantity, shelf_location);
-    const newBook = new Book(ISBN, title, author, available_quantity, shelf_location);
-    await newBook.addBookToDatabase();
+    // const { ISBN, title, author, available_quantity, shelf_location } = req.body;
+
+    const JSON = {
+        ISBN: req.body.ISBN,
+        title: req.body.title,
+        author: req.body.author,
+        available_quantity: req.body.available_quantity,
+        shelf_location: req.body.shelf_location
+    }
+
+    console.log(JSON);
+
+    Book.addBook(JSON);
     res.status(201).json({ message: 'Book added successfully' });
 };
 

@@ -1,5 +1,5 @@
 const Book = require('./Book.js');
-const Borrower = require('./Borrower.js');
+const Borrower = require('./user.js');
 const knex = require('../Database/knex.js');
 
 exports.checkOutBook = async (ISBN, email) => {
@@ -10,6 +10,7 @@ exports.checkOutBook = async (ISBN, email) => {
     }
 
     const borrower = await Borrower.getBorrowerByEmail(email);
+
     if (borrower.length === 0) {
         throw new Error('Borrower not found');
     }
@@ -19,12 +20,7 @@ exports.checkOutBook = async (ISBN, email) => {
     }
 
     await Book.updateBookQuantity(ISBN, book[0].available_quantity - 1);
-
-    console.log(3);
-
     await Borrower.borrowBook(ISBN, email);
-
-    console.log(4);
 };
 
 exports.returnBook = async (ISBN, email) => {
@@ -38,7 +34,7 @@ exports.returnBook = async (ISBN, email) => {
 
     console.log(`ISBN: ${ISBN}, email: ${email}`);
 
-    
+
     if (borrower.length === 0) {
         throw new Error('Borrower not found');
     }

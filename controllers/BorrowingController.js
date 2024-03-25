@@ -28,7 +28,7 @@ exports.returnBook = async (req, res) => {
 
 exports.listBorrowedBooks = async (req, res) => {
     // Logic to list all books borrowed by a user
-    const { email } = req.params;
+    const { email } = req.body;
 
     try {
         const books = await BorrowingSystem.listBorrowedBooks(email);
