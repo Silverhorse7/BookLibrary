@@ -1,28 +1,107 @@
-const express = require('express');
+const express = require("express");
+const UserController = require("../controllers/UserController");
+const BookController = require("../controllers/BookController");
+const TransactionController = require("../controllers/TransactionController");
+
+const authenticate = require("../middleware/authenticate");
+const shouldBorrowBook = require("../middleware/shouldBorrowBook");
+const ensureIsAdmin = require("../middleware/ensureIsAdmin");
+const validateInput = require("../middleware/validateInput");
+const validateLimitAndOffset = require("../middleware/validateLimitAndOffset");
+
 const router = express.Router();
 
-// Import your controllers
-const BookController = require('../controllers/BookController');
-const BorrowerController = require('../controllers/BorrowerController');
-const BorrowingController = require('../controllers/BorrowingController');
+router
+  .get("/", (req, res) =>
+    res.status(200).send({
+      message: "Welcome to the Hello Books API!",
+    })
+  )
+  // Unprotected routes
+  .post("/users/signup", validateInput.signup, UserController.createUser)
+  .post("/users/signin", validateInput.signin, UserController.getUser)
 
+  .get("/books/category", BookController.getBookCategories)
 
-// Books routes
-router.get('/books', BookController.listBooks); // tested, working
-router.put('/books', BookController.updateBook); // tested, working
-router.post('/books', BookController.addBook); // tested, working
-router.get('/books/search', BookController.searchBooks); // tested, working
-router.delete('/books', BookController.deleteBook); // tested, working
+  .get("/books/suggestions", BookController.suggestedBooks)
+  .get("/books/:id", validateInput.validateId, BookController.getBook)
 
-// Borrowers routes
-router.post('/borrowers', BorrowerController.registerBorrower); // tested, working
-router.put('/borrowers', BorrowerController.updateBorrower); // tested, working
-router.delete('/borrowers', BorrowerController.deleteBorrower); // tested, working
-router.get('/borrowers', BorrowerController.listBorrowers); // tested, working
+  .get("/books", validateLimitAndOffset, BookController.getBooks)
 
-// Borrowing process routes
-router.post('/borrow', BorrowingController.borrowBook); // tested, working
-router.post('/return', BorrowingController.returnBook); // tested, working
-router.get('/borrowers', BorrowingController.listBorrowedBooks); // tested, working
+  .put(
+    "/users",
+    authenticate,
+    validateInput.updateUser,
+    UserController.updateUserInfo
+  )
+  .post(
+    "/users/:id/books",
+    authenticate,
+    validateInput.validateId,
+    shouldBorrowBook,
+    BookController.borrowBook
+  )
+  .put(
+    "/users/:id/books",
+    authenticate,
+    validateInput.validateId,
+    BookController.returnBook
+  )
+  .get(
+    "/users/:id/books",
+    authenticate,
+    validateInput.validateId,
+    UserController.getBorrowedBooks
+  )
+  .get(
+    "/users/:id/transactions",
+    authenticate,
+    validateInput.validateId,
+    (req, res, next) => TransactionController(req, res, next, { history: true })
+  )
+  .post(
+    "/users/reset-password/:token",
+    authenticate,
+    UserController.updateUserInfo
+  )
+
+  // Admin-specific routes
+  .post(
+    "/books/category",
+    authenticate,
+    ensureIsAdmin,
+    BookController.addCategory
+  )
+  .post( 
+    "/books",
+    authenticate,
+    ensureIsAdmin,
+    validateInput.addBook,
+    BookController.createBook
+  )
+  .delete(
+    "/books/:id",
+    authenticate,
+    ensureIsAdmin,
+    validateInput.validateId,
+    BookController.deleteBook
+  )
+  .put(
+    "/books/:id",
+    authenticate,
+    ensureIsAdmin,
+    validateInput.validateId,
+    validateInput.updateBook,
+    BookController.editBookInfo
+  )
+  .get("/admin-notifications", authenticate, ensureIsAdmin, (req, res, next) =>
+    TransactionController(req, res, next, { admin: true })
+  )
+  // Send a message if route does not exist
+  .get("*", (req, res) =>
+    res.status(404).send({
+      message: "Seems like you might be lost",
+    })
+  );
 
 module.exports = router;
