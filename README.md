@@ -48,6 +48,69 @@ node app.js
 
 ## API Endpoints (Restful) (Soon to be documented)
 
+### Authentication
+  * Signup - POST /api/v1/auth/users/signup
+    * Required fields: username, email, password, confirmPassword
+    * For testing purpose, there's a boolean isAdmin field that can be set to true to create an admin user.
+    * Returns a token on successful signup with a message
+  * Signin - POST /api/v1/auth/users/signin
+    * Required fields: username, password
+    * Returns a token on successful signin with a message with user name
+
+### Books
+> To access these routes, you need to have a token.
+> ID corresponds to ISBN of the book
+
+* Get all books - GET /api/v1/books
+  * Required fields: None, except for the token
+  * Returns all books in the library
+* Get a book - GET /api/v1/books/:bookId
+  * Required fields: bookId
+  * Returns a single book
+* add book - POST /api/v1/books (Admin only)
+  * Required fields: Example
+  ```javascript
+    {
+    "token": "Your token ",
+    "title" : "The Lion3",
+    "authors": "Yosef Madboly",
+    "total" : "5", (optional)
+    "id": 76, (optional)
+    "categoryId": "" (optional),
+    "description": "" (optional),
+    "cover": "" (optional),
+    "bookFile": "" (optional)
+    }
+  ```
+  * Returns a detailed description of the book added
+* add category - POST /api/v1/books/category (Admin only)
+  * Required fields: category name
+  * Returns a detailed description of the category added with id
+* delete book - DELETE /api/v1/books/:bookId (Admin only)
+  * Required fields: bookId
+  * Returns a message
+* edit book - PUT /api/v1/books/:bookId (Admin only)
+  * Required fields: bookId, category, (just like add book)
+  * Returns a detailed description of the book edited
+
+### User
+> To access these routes, you need to have a token.
+
+* Borrow a book - POST /api/v1/users/:bookId/books
+  * Required fields: none
+  * Returns a message with the book borrowed
+* Return a book - PUT /api/v1/users/:bookId/books
+* Get all books borrowed - GET /api/v1/users/:bookId/books
+  * Required fields: none
+  * Returns all books borrowed by the user
+* Get users transaction history - GET /api/v1/users/:id/transactions
+  * Required fields: none
+  * Returns all books borrowed by the user
+* edit user - PUT /api/v1/users/:id (Admin only)
+  * Required fields: id, isAdmin
+  * Returns a detailed description of the user edited
+
+
 ## Future Improvements
 
 - Implement testing via jest.

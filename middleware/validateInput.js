@@ -4,11 +4,11 @@
 // import { User } from '../models';
 // import { isReset } from './authenticate';
 
-const deepClone = require('deepclonejs');
-const bcrypt = require('bcrypt');
+const deepClone = require("deepclonejs");
+const bcrypt = require("bcrypt");
 
-const User = require('../models').User;
-const isReset = require('./authenticate').isReset;
+const User = require("../models").User;
+const isReset = require("./authenticate").isReset;
 
 /**
  * deletes empty fields in object
@@ -21,7 +21,7 @@ const deleteEmptyFields = (object) => {
   const clonedObject = deepClone(object);
   const fields = Object.keys(clonedObject);
   fields.forEach((field) => {
-    if (clonedObject[field] === (null || undefined || '')) {
+    if (clonedObject[field] === (null || undefined || "")) {
       delete clonedObject[field];
     }
   });
@@ -39,7 +39,7 @@ const trimFields = (object) => {
   const clonedObject = deepClone(object);
   const fields = Object.keys(clonedObject);
   fields.forEach((field) => {
-    if (typeof clonedObject[field] === 'string') {
+    if (typeof clonedObject[field] === "string") {
       clonedObject[field] = clonedObject[field].trim();
     }
   });
@@ -54,11 +54,8 @@ const trimFields = (object) => {
  *
  * @return {Promise}          Promise which resolve to Boolean type
  */
-const passwordIsCorrect = (id, password) => (
-  User.findById(id)
-    .then(user => (bcrypt.compare(password, user.password)))
-);
-
+const passwordIsCorrect = (id, password) =>
+  User.findById(id).then((user) => bcrypt.compare(password, user.password));
 
 /**
  * checks if Password reset token has been unusedToken
@@ -69,17 +66,15 @@ const passwordIsCorrect = (id, password) => (
  * @return {Boolean}       true if token matches stored token
  */
 const unusedToken = (id, token) =>
-  User.findById(id)
-    .then(user => user.passwordResetToken === token);
+  User.findById(id).then((user) => user.passwordResetToken === token);
 
-
-const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|z(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}]),|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-
+const emailRegex =
+  /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|z(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}]),|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 /**
  * input validation middleware
  */
-module.exports =  {
+module.exports = {
   /**
    * validates fields on request to update user data
    *
@@ -99,24 +94,26 @@ module.exports =  {
         .then((correct) => {
           if (!correct) {
             return res.status(422).send({
-              message: 'Wrong password provided',
+              message: "Wrong password provided",
             });
           }
           req.body.password = req.body.newPassword;
           next();
-        }).catch(() => res.status(500).send({
-          message: 'an error occured while trying to update your information'
-        }));
+        })
+        .catch(() =>
+          res.status(500).send({
+            message: "an error occured while trying to update your information",
+          })
+        );
     } else if (isReset(req)) {
-      unusedToken(req.user.id, req.params.token)
-        .then((tokenStatus) => {
-          if (!tokenStatus) {
-            return res.status(422).send({
-              message: 'This link has been used already',
-            });
-          }
-          next();
-        });
+      unusedToken(req.user.id, req.params.token).then((tokenStatus) => {
+        if (!tokenStatus) {
+          return res.status(422).send({
+            message: "This link has been used already",
+          });
+        }
+        next();
+      });
     } else {
       delete req.body.password;
       next();
@@ -138,27 +135,25 @@ module.exports =  {
     // delete req.body.isAdmin;
     req.body.username = req.body.username && req.body.username.toLowerCase();
     const { username, password, email, confirmPassword } = req.body;
-    if (!username || typeof username !== 'string') {
+    if (!username || typeof username !== "string") {
       return res.status(400).send({
-        message: 'Username is required'
+        message: "Username is required",
       });
-    } else if (!password || typeof password !== 'string') {
+    } else if (!password || typeof password !== "string") {
       return res.status(400).send({
-        message: 'Password is required'
+        message: "Password is required",
       });
     } else if (!email) {
       return res.status(400).send({
-        message: 'Email is required'
+        message: "Email is required",
       });
     } else if (!emailRegex.test(email)) {
       return res.status(400).send({
-        message: 'Invalid Email'
+        message: "Invalid Email",
       });
-    } else if (
-      !(password === confirmPassword)
-    ) {
+    } else if (!(password === confirmPassword)) {
       return res.status(400).send({
-        message: 'Passwords do not match'
+        message: "Passwords do not match",
       });
     }
     next();
@@ -177,13 +172,13 @@ module.exports =  {
     req.body = deleteEmptyFields(trimFields(req.body));
     req.body.username = req.body.username && req.body.username.toLowerCase();
     const { username, password } = req.body;
-    if (!username || typeof username !== 'string') {
+    if (!username || typeof username !== "string") {
       return res.status(400).send({
-        message: 'Username is required'
+        message: "Username is required",
       });
-    } else if (!password || typeof password !== 'string') {
+    } else if (!password || typeof password !== "string") {
       return res.status(400).send({
-        message: 'Password is required'
+        message: "Password is required",
       });
     }
     next();
@@ -201,7 +196,7 @@ module.exports =  {
   requestPasswordReset(req, res, next) {
     req.body = deleteEmptyFields(trimFields(req.body));
     if (!req.body.email) {
-      return res.status(400).send({ message: 'Email cannot be empty' });
+      return res.status(400).send({ message: "Email cannot be empty" });
     }
     next();
   },
@@ -217,19 +212,26 @@ module.exports =  {
    */
   addBook(req, res, next) {
     req.body = deleteEmptyFields(trimFields(req.body));
-    req.body.categoryId = (!Number.isNaN(req.body.categoryId) &&
-      Number.isInteger(Number(req.body.categoryId)) &&
-      Number(req.body.categoryId)) || undefined;
+
+    req.body.categoryId =
+      (!Number.isNaN(req.body.categoryId) &&
+        Number.isInteger(Number(req.body.categoryId)) &&
+        Number(req.body.categoryId)) ||
+      undefined;
+    
+    
     if (!req.body.title) {
       return res.status(400).send({
-        message: 'Book must have a title'
+        message: "Book must have a title",
       });
     }
     if (!req.body.authors) {
       return res.status(400).send({
-        message: 'Book must have an author'
+        message: "Book must have an author",
       });
     }
+
+    
     next();
   },
 
@@ -245,7 +247,7 @@ module.exports =  {
   updateBook(req, res, next) {
     req.body = deleteEmptyFields(trimFields(req.body));
     if (!Object.keys(req.body).length) {
-      return res.status(400).send({ message: 'Nothing to update' });
+      return res.status(400).send({ message: "Nothing to update" });
     }
     next();
   },
@@ -262,14 +264,14 @@ module.exports =  {
   validateId(req, res, next) {
     if (req.body.id && !Number.isInteger(Number(req.body.id))) {
       return res.status(400).send({
-        message: 'Id must be an integer'
+        message: "Id must be an integer",
       });
     }
     if (req.params.id && !Number.isInteger(Number(req.params.id))) {
       return res.status(400).send({
-        message: 'Id must be an integer'
+        message: "Id must be an integer",
       });
     }
     next();
-  }
+  },
 };

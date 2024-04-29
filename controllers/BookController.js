@@ -7,7 +7,7 @@ const BookCategory = require("../models").BookCategory;
 const Notification = require("../models").Notification;
 const { Op } = require("sequelize");
 
-const { getQuery, getOptions } = require("../helpers/filter");
+const { getQuery, getOptions, paginate } = require("../helpers/pagination");
 
 const BookController = {
   /**
@@ -78,7 +78,7 @@ const BookController = {
    */
   createBook(req, res, next) {
     const bookData = req.body;
-    return Book.find({ where: { title: bookData.title } })
+    return Book.findOne({ where: { title: bookData.title } })
       .then((existing) =>
         existing
           ? res.status(409).send({

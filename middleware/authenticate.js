@@ -15,6 +15,7 @@ dotenv.config();
 *
 * @return {String}      json web token
 */
+
 const getToken = (req) => {
   const token =
     req.body.token ||
@@ -47,7 +48,7 @@ const isReset = (req) =>
  * @returns {Object|Function} sends an http response or calls the next
  * middleware function in stack
  */
-module.exports =  authenticate = (req, res, next) => {
+authenticate = (req, res, next) => {
   const token = getToken(req);
   if (token) {
     jwt.verify(token, process.env.SECRET, (error, decoded) => {
@@ -75,3 +76,5 @@ module.exports =  authenticate = (req, res, next) => {
     });
   }
 };
+
+module.exports = authenticate;

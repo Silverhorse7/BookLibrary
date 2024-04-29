@@ -28,13 +28,13 @@ router
 
   .get("/books", validateLimitAndOffset, BookController.getBooks)
 
-  .put(
+  .put( // done
     "/users",
     authenticate,
     validateInput.updateUser,
     UserController.updateUserInfo
   )
-  .post(
+  .post( // done
     "/users/:id/books",
     authenticate,
     validateInput.validateId,
@@ -53,7 +53,7 @@ router
     validateInput.validateId,
     UserController.getBorrowedBooks
   )
-  .get(
+  .get( // done
     "/users/:id/transactions",
     authenticate,
     validateInput.validateId,
@@ -79,14 +79,14 @@ router
     validateInput.addBook,
     BookController.createBook
   )
-  .delete(
+  .delete( // not working properly
     "/books/:id",
     authenticate,
     ensureIsAdmin,
     validateInput.validateId,
     BookController.deleteBook
   )
-  .put(
+  .put( // working
     "/books/:id",
     authenticate,
     ensureIsAdmin,

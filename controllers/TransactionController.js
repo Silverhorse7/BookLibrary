@@ -2,7 +2,7 @@ const  Notification = require('../models').Notification;
 // import { getOptions, paginate } from '../helpers/pagination';
 
 //  
-const { getOptions, paginate } = require('../helpers/filter');
+const { getOptions, paginate } = require('../helpers/pagination');
 
 /**
  * fetch all notifications for admin
